@@ -1,0 +1,352 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+    Route::namespace('Auth')->group(function () {
+        Route::get('/', 'LoginController@showLoginForm')->name('login');
+        Route::post('/', 'LoginController@login')->name('login');
+        Route::get('logout', 'LoginController@logout')->name('logout');
+        // Admin Password Reset
+        Route::get('password/reset', 'ForgotPasswordController@showLinkRequestForm')->name('password.reset');
+        Route::post('password/reset', 'ForgotPasswordController@sendResetCodeEmail');
+        Route::post('password/verify-code', 'ForgotPasswordController@verifyCode')->name('password.verify.code');
+        Route::get('password/reset/{token}', 'ResetPasswordController@showResetForm')->name('password.reset.form');
+        Route::post('password/reset/change', 'ResetPasswordController@reset')->name('password.change');
+    });
+
+    Route::middleware('admin')->group(function () {
+        Route::get('dashboard', 'AdminController@dashboard')->name('dashboard');
+        //Admin
+        Route::get('index', 'AdminController@createAdminForm')->name('index');
+        Route::post('store', 'AdminController@adminStore')->name('store');
+        Route::post('update/{id}', 'AdminController@adminUpdate')->name('update');
+        Route::post('delete', 'AdminController@adminDelete')->name('delete');
+        //Department
+        Route::get('department/index', 'DepartmentController@index')->name('department.index');
+        Route::post('department/store', 'DepartmentController@store')->name('department.store');
+        Route::post('department/update/{id}', 'DepartmentController@update')->name('department.update');
+        //Doctors
+        Route::get('doctor/index', 'DoctorController@index')->name('doctor.index');
+        Route::get('doctor/create', 'DoctorController@create')->name('doctor.create');
+        Route::post('doctor/store', 'DoctorController@store')->name('doctor.store');
+        Route::get('doctor/edit/{id}', 'DoctorController@edit')->name('doctor.edit');
+        Route::post('doctor/update/{id}', 'DoctorController@update')->name('doctor.update');
+        Route::post('doctor/activate', 'DoctorController@activate')->name('doctor.activate');
+        Route::post('doctor/deactivate', 'DoctorController@deactivate')->name('doctor.deactivate');
+        Route::get('doctor/details/{id}/{slug}', 'DoctorController@details')->name('doctor.details');
+        //Doctor-Assistant
+        Route::get('doctor/assistant/index', 'AssistantController@index')->name('doctor.assistant.index');
+        Route::get('doctor/assistant/create', 'AssistantController@create')->name('doctor.assistant.create');
+        Route::post('doctor/assistant/store', 'AssistantController@store')->name('doctor.assistant.store');
+        Route::get('doctor/assistant/edit/{id}', 'AssistantController@edit')->name('doctor.assistant.edit');
+        Route::post('doctor/assistant/update/{id}', 'AssistantController@update')->name('doctor.assistant.update');
+        Route::post('doctor/assistant/activate', 'AssistantController@activate')->name('doctor.assistant.activate');
+        Route::post('doctor/assistant/deactivate', 'AssistantController@deactivate')->name('doctor.assistant.deactivate');
+        // Schedule Created by Admin
+        Route::get('doctor/schedules', 'ScheduleController@index')->name('doctor.schedule.index');
+        Route::get('schedule/create', 'ScheduleController@create')->name('doctor.schedule.create');
+        Route::post('schedule/store', 'ScheduleController@store')->name('doctor.schedule.store');
+        Route::get('schedule/edit/{id}', 'ScheduleController@edit')->name('doctor.schedule.edit');
+        Route::post('schedule/update/{id}', 'ScheduleController@update')->name('doctor.schedule.update');
+        Route::post('schedule/delete', 'ScheduleController@delete')->name('doctor.schedule.delete');
+        //slot (dorcot schedule slot)
+        Route::get('slots', 'ScheduleController@allSlot')->name('schedule.slot');
+        Route::post('slot/store', 'ScheduleController@slotStore')->name('schedule.slot.store');
+        Route::post('slot/update/{id}', 'ScheduleController@slotUpdate')->name('schedule.slot.update');
+        Route::post('slot/delete', 'ScheduleController@slotDelete')->name('slot.delete');
+         //Appointments
+         Route::get('appointments', 'AppointmentController@index')->name('appointment.index');
+         Route::get('appointment/create', 'AppointmentController@create')->name('appointment.create');
+         Route::post('appointment/store', 'AppointmentController@store')->name('appointment.store');
+         Route::post('appointment/activate', 'AppointmentController@activate')->name('appointment.activate');
+         Route::post('appointment/deactivate', 'AppointmentController@deactivate')->name('appointment.deactivate');
+         Route::get('appointment/assign/{assign_id}/{slug}', 'AppointmentController@assign')->name('appointment.assign');
+         //Laboratorist
+        Route::get('laboratorist/index', 'LaboratoristController@index')->name('laboratorist.index');
+        Route::get('laboratorist/create', 'LaboratoristController@create')->name('laboratorist.create');
+        Route::post('laboratorist/store', 'LaboratoristController@store')->name('laboratorist.store');
+        Route::get('laboratorist/edit/{id}', 'LaboratoristController@edit')->name('laboratorist.edit');
+        Route::post('laboratorist/update/{id}', 'LaboratoristController@update')->name('laboratorist.update');
+        Route::post('laboratorist/activate', 'LaboratoristController@activate')->name('laboratorist.activate');
+        Route::post('laboratorist/deactivate', 'LaboratoristController@deactivate')->name('laboratorist.deactivate');
+         //Accountant
+        Route::get('accountant/index', 'AccountantController@index')->name('accountant.index');
+        Route::get('accountant/create', 'AccountantController@create')->name('accountant.create');
+        Route::post('accountant/store', 'AccountantController@store')->name('accountant.store');
+        Route::get('accountant/edit/{id}', 'AccountantController@edit')->name('accountant.edit');
+        Route::post('accountant/update/{id}', 'AccountantController@update')->name('accountant.update');
+        Route::post('accountant/activate', 'AccountantController@activate')->name('accountant.activate');
+        Route::post('accountant/deactivate', 'AccountantController@deactivate')->name('accountant.deactivate');
+         //Receptionist
+        Route::get('receptionist/index', 'ReceptionistController@index')->name('receptionist.index');
+        Route::get('receptionist/create', 'ReceptionistController@create')->name('receptionist.create');
+        Route::post('receptionist/store', 'ReceptionistController@store')->name('receptionist.store');
+        Route::get('receptionist/edit/{id}', 'ReceptionistController@edit')->name('receptionist.edit');
+        Route::post('receptionist/update/{id}', 'ReceptionistController@update')->name('receptionist.update');
+        Route::post('receptionist/activate', 'ReceptionistController@activate')->name('receptionist.activate');
+        Route::post('receptionist/deactivate', 'ReceptionistController@deactivate')->name('receptionist.deactivate');
+         //Case Studies
+         Route::get('prescription/case/studies/index', 'PrescriptionController@caseStudies')->name('prescription.case.studies.index');
+         Route::get('prescription/case/study/create', 'PrescriptionController@createCaseStudy')->name('prescription.case.study.create');
+         Route::post('prescription/case/study/store', 'PrescriptionController@storeCaseStudy')->name('prescription.case.study.store');
+         Route::get('prescription/case/study/edit/{id}', 'PrescriptionController@editCaseStudy')->name('prescription.case.studies.edit');
+         Route::post('prescription/case/study/update/{id}', 'PrescriptionController@updateCaseStudy')->name('prescription.case.study.update');
+        //Prescription
+         Route::get('prescriptions', 'PrescriptionController@index')->name('prescription.index');
+         Route::get('prescription/create', 'PrescriptionController@create')->name('prescription.create');
+         Route::post('prescription/store', 'PrescriptionController@store')->name('prescription.store');
+         Route::get('prescription/view/{id}/{slug}', 'PrescriptionController@details')->name('prescription.view');
+         Route::get('prescription/pdf-generate/{id}', 'PrescriptionController@generatePDF')->name('pdf.generate');
+        //Admin Profile
+        Route::get('profile', 'AdminController@profile')->name('profile');
+        Route::post('profile', 'AdminController@profileUpdate')->name('profile.update');
+        Route::get('password', 'AdminController@password')->name('password');
+        Route::post('password', 'AdminController@passwordUpdate')->name('password.update');
+        //Notification
+        Route::get('notifications','AdminController@notifications')->name('notifications');
+        Route::get('notification/read/{id}','AdminController@notificationRead')->name('notification.read');
+        Route::get('notifications/read-all','AdminController@readAll')->name('notifications.readAll');
+
+        //Noticeboard
+        Route::get('noticeboard/index', 'NoticeboardController@index')->name('noticeboard.index');
+        Route::get('noticeboard/create', 'NoticeboardController@create')->name('noticeboard.create');
+        Route::post('noticeboard/store', 'NoticeboardController@store')->name('noticeboard.store');
+        Route::post('noticeboard/update/{id}', 'NoticeboardController@update')->name('noticeboard.update');
+        Route::post('noticeboard/delete', 'NoticeboardController@delete')->name('noticeboard.delete');
+        Route::get('noticeboard/pdf-generate/{id}', 'NoticeboardController@generatePDF')->name('pdf.generate');
+        //Report Bugs
+        Route::get('request-report','AdminController@requestReport')->name('request.report');
+        Route::post('request-report','AdminController@reportSubmit');
+        Route::get('system-info','AdminController@systemInfo')->name('system.info');
+        //uSER Documents
+        Route::get('documents', 'PatientDocumentController@index')->name('user.documents');
+        Route::get('document/create', 'PatientDocumentController@create')->name('user.document.create');
+        Route::post('document/store', 'PatientDocumentController@store')->name('user.document.store');
+        Route::post('document/edit', 'PatientDocumentController@edit')->name('user.document.edit');
+        Route::post('document/update/{id}', 'PatientDocumentController@update')->name('user.document.update');
+        Route::post('document/delete', 'PatientDocumentController@delete')->name('user.document.delete');
+        //Attachments
+        Route::get('user/attachment/view/{id}', 'PatientDocumentController@viewAttachments')->name('user.document.attachments');
+        Route::get('attachment/download/{id}', 'PatientDocumentController@download')->name('attachment.download');
+        //Users Manager
+        Route::get('users', 'ManageUsersController@allUsers')->name('users.all');
+        Route::get('users/active', 'ManageUsersController@activeUsers')->name('users.active');
+        Route::get('users/banned', 'ManageUsersController@bannedUsers')->name('users.banned');
+        Route::get('users/email-verified', 'ManageUsersController@emailVerifiedUsers')->name('users.email.verified');
+        Route::get('users/email-unverified', 'ManageUsersController@emailUnverifiedUsers')->name('users.email.unverified');
+        Route::get('users/sms-unverified', 'ManageUsersController@smsUnverifiedUsers')->name('users.sms.unverified');
+        Route::get('users/sms-verified', 'ManageUsersController@smsVerifiedUsers')->name('users.sms.verified');
+        Route::get('users/with-balance', 'ManageUsersController@usersWithBalance')->name('users.with.balance');
+
+        Route::get('users/{scope}/search', 'ManageUsersController@search')->name('users.search');
+        Route::get('user/detail/{id}', 'ManageUsersController@detail')->name('users.detail');
+
+        Route::get('user/create', 'ManageUsersController@create')->name('users.create');
+        Route::post('user/store', 'ManageUsersController@store')->name('users.store');
+
+
+
+        Route::post('user/update/{id}', 'ManageUsersController@update')->name('users.update');
+        Route::post('user/add-sub-balance/{id}', 'ManageUsersController@addSubBalance')->name('users.add.sub.balance');
+        Route::get('user/send-email/{id}', 'ManageUsersController@showEmailSingleForm')->name('users.email.single');
+        Route::post('user/send-email/{id}', 'ManageUsersController@sendEmailSingle')->name('users.email.single');
+        Route::get('user/login/{id}', 'ManageUsersController@login')->name('users.login');
+        Route::get('user/transactions/{id}', 'ManageUsersController@transactions')->name('users.transactions');
+        Route::get('user/deposits/{id}', 'ManageUsersController@deposits')->name('users.deposits');
+        Route::get('user/deposits/via/{method}/{type?}/{userId}', 'ManageUsersController@depositViaMethod')->name('users.deposits.method');
+        Route::get('user/withdrawals/{id}', 'ManageUsersController@withdrawals')->name('users.withdrawals');
+        Route::get('user/withdrawals/via/{method}/{type?}/{userId}', 'ManageUsersController@withdrawalsViaMethod')->name('users.withdrawals.method');
+        // Login History
+        Route::get('users/login/history/{id}', 'ManageUsersController@userLoginHistory')->name('users.login.history.single');
+
+        Route::get('users/send-email', 'ManageUsersController@showEmailAllForm')->name('users.email.all');
+        Route::post('users/send-email', 'ManageUsersController@sendEmailAll')->name('users.email.send');
+        Route::get('users/email-log/{id}', 'ManageUsersController@emailLog')->name('users.email.log');
+        Route::get('users/email-details/{id}', 'ManageUsersController@emailDetails')->name('users.email.details');
+
+        // Subscriber
+        Route::get('subscriber', 'SubscriberController@index')->name('subscriber.index');
+        Route::get('subscriber/send-email', 'SubscriberController@sendEmailForm')->name('subscriber.sendEmail');
+        Route::post('subscriber/remove', 'SubscriberController@remove')->name('subscriber.remove');
+        Route::post('subscriber/send-email', 'SubscriberController@sendEmail')->name('subscriber.sendEmail');
+
+
+        // Deposit Gateway
+        Route::name('gateway.')->prefix('gateway')->group(function(){
+            // Automatic Gateway
+            Route::get('automatic', 'GatewayController@index')->name('automatic.index');
+            Route::get('automatic/edit/{alias}', 'GatewayController@edit')->name('automatic.edit');
+            Route::post('automatic/update/{code}', 'GatewayController@update')->name('automatic.update');
+            Route::post('automatic/remove/{code}', 'GatewayController@remove')->name('automatic.remove');
+            Route::post('automatic/activate', 'GatewayController@activate')->name('automatic.activate');
+            Route::post('automatic/deactivate', 'GatewayController@deactivate')->name('automatic.deactivate');
+
+
+            // Manual Methods
+            Route::get('manual', 'ManualGatewayController@index')->name('manual.index');
+            Route::get('manual/new', 'ManualGatewayController@create')->name('manual.create');
+            Route::post('manual/new', 'ManualGatewayController@store')->name('manual.store');
+            Route::get('manual/edit/{alias}', 'ManualGatewayController@edit')->name('manual.edit');
+            Route::post('manual/update/{id}', 'ManualGatewayController@update')->name('manual.update');
+            Route::post('manual/activate', 'ManualGatewayController@activate')->name('manual.activate');
+            Route::post('manual/deactivate', 'ManualGatewayController@deactivate')->name('manual.deactivate');
+        });
+
+
+        // DEPOSIT SYSTEM
+        Route::name('deposit.')->prefix('deposit')->group(function(){
+            Route::get('/', 'DepositController@deposit')->name('list');
+            Route::get('pending', 'DepositController@pending')->name('pending');
+            Route::get('rejected', 'DepositController@rejected')->name('rejected');
+            Route::get('approved', 'DepositController@approved')->name('approved');
+            Route::get('successful', 'DepositController@successful')->name('successful');
+            Route::get('details/{id}', 'DepositController@details')->name('details');
+
+            Route::post('reject', 'DepositController@reject')->name('reject');
+            Route::post('approve', 'DepositController@approve')->name('approve');
+            Route::get('via/{method}/{type?}', 'DepositController@depositViaMethod')->name('method');
+            Route::get('/{scope}/search', 'DepositController@search')->name('search');
+            Route::get('date-search/{scope}', 'DepositController@dateSearch')->name('dateSearch');
+
+        });
+
+
+        // WITHDRAW SYSTEM
+        Route::name('withdraw.')->prefix('withdraw')->group(function(){
+            Route::get('pending', 'WithdrawalController@pending')->name('pending');
+            Route::get('approved', 'WithdrawalController@approved')->name('approved');
+            Route::get('rejected', 'WithdrawalController@rejected')->name('rejected');
+            Route::get('log', 'WithdrawalController@log')->name('log');
+            Route::get('via/{method_id}/{type?}', 'WithdrawalController@logViaMethod')->name('method');
+            Route::get('{scope}/search', 'WithdrawalController@search')->name('search');
+            Route::get('date-search/{scope}', 'WithdrawalController@dateSearch')->name('dateSearch');
+            Route::get('details/{id}', 'WithdrawalController@details')->name('details');
+            Route::post('approve', 'WithdrawalController@approve')->name('approve');
+            Route::post('reject', 'WithdrawalController@reject')->name('reject');
+
+
+            // Withdraw Method
+            Route::get('method/', 'WithdrawMethodController@methods')->name('method.index');
+            Route::get('method/create', 'WithdrawMethodController@create')->name('method.create');
+            Route::post('method/create', 'WithdrawMethodController@store')->name('method.store');
+            Route::get('method/edit/{id}', 'WithdrawMethodController@edit')->name('method.edit');
+            Route::post('method/edit/{id}', 'WithdrawMethodController@update')->name('method.update');
+            Route::post('method/activate', 'WithdrawMethodController@activate')->name('method.activate');
+            Route::post('method/deactivate', 'WithdrawMethodController@deactivate')->name('method.deactivate');
+        });
+
+        // Report
+        Route::get('report/transaction', 'ReportController@transaction')->name('report.transaction');
+        Route::get('report/transaction/search', 'ReportController@transactionSearch')->name('report.transaction.search');
+        Route::get('report/login/history', 'ReportController@loginHistory')->name('report.login.history');
+        Route::get('report/login/ipHistory/{ip}', 'ReportController@loginIpHistory')->name('report.login.ipHistory');
+        Route::get('report/email/history', 'ReportController@emailHistory')->name('report.email.history');
+
+
+        // Admin Support
+        Route::get('tickets', 'SupportTicketController@tickets')->name('ticket');
+        Route::get('tickets/pending', 'SupportTicketController@pendingTicket')->name('ticket.pending');
+        Route::get('tickets/closed', 'SupportTicketController@closedTicket')->name('ticket.closed');
+        Route::get('tickets/answered', 'SupportTicketController@answeredTicket')->name('ticket.answered');
+        Route::get('tickets/view/{id}', 'SupportTicketController@ticketReply')->name('ticket.view');
+        Route::post('ticket/reply/{id}', 'SupportTicketController@ticketReplySend')->name('ticket.reply');
+        Route::get('ticket/download/{ticket}', 'SupportTicketController@ticketDownload')->name('ticket.download');
+        Route::post('ticket/delete', 'SupportTicketController@ticketDelete')->name('ticket.delete');
+
+
+        // Language Manager
+        Route::get('/language', 'LanguageController@langManage')->name('language.manage');
+        Route::post('/language', 'LanguageController@langStore')->name('language.manage.store');
+        Route::post('/language/delete/{id}', 'LanguageController@langDel')->name('language.manage.del');
+        Route::post('/language/update/{id}', 'LanguageController@langUpdate')->name('language.manage.update');
+        Route::get('/language/edit/{id}', 'LanguageController@langEdit')->name('language.key');
+        Route::post('/language/import', 'LanguageController@langImport')->name('language.importLang');
+
+
+
+        Route::post('language/store/key/{id}', 'LanguageController@storeLanguageJson')->name('language.store.key');
+        Route::post('language/delete/key/{id}', 'LanguageController@deleteLanguageJson')->name('language.delete.key');
+        Route::post('language/update/key/{id}', 'LanguageController@updateLanguageJson')->name('language.update.key');
+
+
+
+        // General Setting
+        Route::get('general-setting', 'GeneralSettingController@index')->name('setting.index');
+        Route::post('general-setting', 'GeneralSettingController@update')->name('setting.update');
+        Route::get('optimize', 'GeneralSettingController@optimize')->name('setting.optimize');
+
+        // Logo-Icon
+        Route::get('setting/logo-icon', 'GeneralSettingController@logoIcon')->name('setting.logo.icon');
+        Route::post('setting/logo-icon', 'GeneralSettingController@logoIconUpdate')->name('setting.logo.icon');
+
+        //Custom CSS
+        Route::get('custom-css','GeneralSettingController@customCss')->name('setting.custom.css');
+        Route::post('custom-css','GeneralSettingController@customCssSubmit');
+
+
+        //Cookie
+        Route::get('cookie','GeneralSettingController@cookie')->name('setting.cookie');
+        Route::post('cookie','GeneralSettingController@cookieSubmit');
+
+
+        // Plugin
+        Route::get('extensions', 'ExtensionController@index')->name('extensions.index');
+        Route::post('extensions/update/{id}', 'ExtensionController@update')->name('extensions.update');
+        Route::post('extensions/activate', 'ExtensionController@activate')->name('extensions.activate');
+        Route::post('extensions/deactivate', 'ExtensionController@deactivate')->name('extensions.deactivate');
+
+
+
+        // Email Setting
+        Route::get('email-template/global', 'EmailTemplateController@emailTemplate')->name('email.template.global');
+        Route::post('email-template/global', 'EmailTemplateController@emailTemplateUpdate')->name('email.template.global');
+        Route::get('email-template/setting', 'EmailTemplateController@emailSetting')->name('email.template.setting');
+        Route::post('email-template/setting', 'EmailTemplateController@emailSettingUpdate')->name('email.template.setting');
+        Route::get('email-template/index', 'EmailTemplateController@index')->name('email.template.index');
+        Route::get('email-template/{id}/edit', 'EmailTemplateController@edit')->name('email.template.edit');
+        Route::post('email-template/{id}/update', 'EmailTemplateController@update')->name('email.template.update');
+        Route::post('email-template/send-test-mail', 'EmailTemplateController@sendTestMail')->name('email.template.test.mail');
+
+
+        // SMS Setting
+        Route::get('sms-template/global', 'SmsTemplateController@smsTemplate')->name('sms.template.global');
+        Route::post('sms-template/global', 'SmsTemplateController@smsTemplateUpdate')->name('sms.template.global');
+        Route::get('sms-template/setting','SmsTemplateController@smsSetting')->name('sms.templates.setting');
+        Route::post('sms-template/setting', 'SmsTemplateController@smsSettingUpdate')->name('sms.template.setting');
+        Route::get('sms-template/index', 'SmsTemplateController@index')->name('sms.template.index');
+        Route::get('sms-template/edit/{id}', 'SmsTemplateController@edit')->name('sms.template.edit');
+        Route::post('sms-template/update/{id}', 'SmsTemplateController@update')->name('sms.template.update');
+        Route::post('email-template/send-test-sms', 'SmsTemplateController@sendTestSMS')->name('sms.template.test.sms');
+
+        // SEO
+        Route::get('seo', 'FrontendController@seoEdit')->name('seo');
+        Route::get('site-info', 'FrontendController@siteInfoEdit')->name('site');
+
+
+        // Frontend
+        Route::name('frontend.')->prefix('frontend')->group(function () {
+
+
+            Route::get('templates', 'FrontendController@templates')->name('templates');
+            Route::post('templates', 'FrontendController@templatesActive')->name('templates.active');
+
+
+            Route::get('frontend-sections/{key}', 'FrontendController@frontendSections')->name('sections');
+            Route::post('frontend-content/{key}', 'FrontendController@frontendContent')->name('sections.content');
+            Route::get('frontend-element/{key}/{id?}', 'FrontendController@frontendElement')->name('sections.element');
+            Route::post('remove', 'FrontendController@remove')->name('remove');
+
+            // Page Builder
+            Route::get('manage-pages', 'PageBuilderController@managePages')->name('manage.pages');
+            Route::post('manage-pages', 'PageBuilderController@managePagesSave')->name('manage.pages.save');
+            Route::post('manage-pages/update', 'PageBuilderController@managePagesUpdate')->name('manage.pages.update');
+            Route::post('manage-pages/delete', 'PageBuilderController@managePagesDelete')->name('manage.pages.delete');
+            Route::get('manage-section/{id}', 'PageBuilderController@manageSection')->name('manage.section');
+            Route::post('manage-section/{id}', 'PageBuilderController@manageSectionUpdate')->name('manage.section.update');
+        });
+    });
+
+
+
+
+
